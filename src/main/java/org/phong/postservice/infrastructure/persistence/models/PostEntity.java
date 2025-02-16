@@ -1,5 +1,6 @@
 package org.phong.postservice.infrastructure.persistence.models;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -7,7 +8,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.phong.postservice.enums.PostTypeEnum;
 import org.phong.postservice.enums.VisibilityEnum;
 
@@ -32,10 +34,13 @@ public class PostEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(name = "author_id", nullable = false)
     private UUID authorId;
 
+    @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -46,6 +51,7 @@ public class PostEntity extends BaseEntity {
     @ColumnDefault("PUBLIC")
     private VisibilityEnum visibility;
 
-    @OneToOne(mappedBy = "post")
-    private PostMetadataEntity postMetadata;
+    @Column(columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private JsonNode metadata;
 }

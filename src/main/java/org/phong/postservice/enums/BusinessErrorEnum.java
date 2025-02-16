@@ -11,7 +11,12 @@ public enum BusinessErrorEnum {
     INVALID_USER_ID("Invalid user ID"),
     USER_NOT_FOUND("User not found"),
     INVALID_COMMENT_ID("Invalid comment ID"),
-    COMMENT_NOT_FOUND("Comment not found");
+    COMMENT_NOT_FOUND("Comment not found"),
+    CONVERT_ERROR("Error converting data"),
+    INTERACTION_NOT_FOUND("Interaction not found"),
+
+    ;
+
 
     private final String message;
 }

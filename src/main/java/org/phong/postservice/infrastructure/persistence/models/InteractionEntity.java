@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -25,15 +26,16 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "post_interactions")
+@Table(name = "post_interactions",
+        indexes = {
+                @Index(name = "unique_interaction_per_user", columnList = "post_id, user_id", unique = true)
+        }
+)
 public class InteractionEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(nullable = false)
     private UUID id;
-
-    @Column(name = "post_id", nullable = false)
-    private UUID postId;
 
     @Column(name = "user_id", nullable = false)
     private UUID userId;

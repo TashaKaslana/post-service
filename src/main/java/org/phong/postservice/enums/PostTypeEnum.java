@@ -4,5 +4,6 @@ public enum PostTypeEnum {
     TEXT,
     IMAGE,
     VIDEO,
-    BLOG
+    BLOG,
+    TWITTER
 }

@@ -23,4 +23,22 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(errorMessage.getStatusCode()).body(errorMessage);
     }
+
+    @ExceptionHandler(MetadataConvertedFailedException.class)
+    public ResponseEntity<ErrorMessage> handleMetadataConversionException(MetadataConvertedFailedException ex) {
+        ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(), 400);
+
+        System.err.println("Failed to convert metadata: " + errorMessage.getMessage());
+
+        return ResponseEntity.status(errorMessage.getStatusCode()).body(errorMessage);
+    }
+
+    @ExceptionHandler(InteractionNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleInteractionNotFoundException(InteractionNotFoundException ex) {
+        ErrorMessage errorMessage = new ErrorMessage(ex.getMessage(), 404);
+
+        System.err.println("Interaction not found: " + errorMessage.getMessage());
+
+        return ResponseEntity.status(errorMessage.getStatusCode()).body(errorMessage);
+    }
 }
