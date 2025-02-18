@@ -5,6 +5,7 @@ import org.phong.postservice.dtos.requests.PostCreateRequest;
 import org.phong.postservice.dtos.requests.PostMetadataUpdateRequest;
 import org.phong.postservice.dtos.requests.PostSurfaceUpdateRequest;
 import org.phong.postservice.dtos.requests.PostUpdateRequest;
+import org.phong.postservice.dtos.responds.PostCreatedRespond;
 import org.phong.postservice.dtos.responds.PostEntityRespond;
 import org.phong.postservice.services.PostService;
 import org.springframework.http.HttpStatus;
@@ -37,9 +38,9 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<UUID> createPost(@RequestBody PostCreateRequest request) {
-        UUID postId = postService.createPost(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(postId);
+    public ResponseEntity<PostCreatedRespond> createPost(@Valid @RequestBody PostCreateRequest request) {
+        PostCreatedRespond post = postService.createPost(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 
     @DeleteMapping("/{postId}")

@@ -62,6 +62,10 @@ public class InteractionService {
         interactionRepository.deleteByPost_IdAndUserId(postId, userId);
     }
 
+    public void deleteInteractionsByPostIdList(List<UUID> postIds) {
+        interactionRepository.deleteAllByPost_IdIn(postIds);
+    }
+
     public void updateInteraction(UUID postId, UUID userId, InteractionUpdateRequest request) {
         InteractionEntity interaction = findInteractionByCompositeKey(postId, userId);
 

@@ -26,4 +26,4 @@ CREATE TABLE posts
 CREATE UNIQUE INDEX unique_interaction_per_user ON post_interactions (post_id, user_id);
 
 ALTER TABLE post_interactions
-    ADD CONSTRAINT FK_POST_INTERACTIONS_ON_POST FOREIGN KEY (post_id) REFERENCES posts (id);
+    ADD CONSTRAINT FK_POST_INTERACTIONS_ON_POST FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE ;

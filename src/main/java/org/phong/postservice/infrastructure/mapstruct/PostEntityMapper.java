@@ -10,7 +10,9 @@ import org.phong.postservice.dtos.requests.PostCreateRequest;
 import org.phong.postservice.dtos.requests.PostMetadataUpdateRequest;
 import org.phong.postservice.dtos.requests.PostSurfaceUpdateRequest;
 import org.phong.postservice.dtos.requests.PostUpdateRequest;
+import org.phong.postservice.dtos.responds.PostCreatedRespond;
 import org.phong.postservice.dtos.responds.PostEntityRespond;
+import org.phong.postservice.events.producers.PostDeletedEvent;
 import org.phong.postservice.infrastructure.persistence.models.PostEntity;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
@@ -49,4 +51,18 @@ public interface PostEntityMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     PostEntity partialUpdate(PostEntityRespond postEntityRespond, @MappingTarget PostEntity postEntity);
+
+    PostEntity toEntity(PostDeletedEvent postDeletedEvent);
+
+    PostDeletedEvent toDto5(PostEntity postEntity);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    PostEntity partialUpdate(PostDeletedEvent postDeletedEvent, @MappingTarget PostEntity postEntity);
+
+    PostEntity toEntity(PostCreatedRespond postCreatedRespond);
+
+    PostCreatedRespond toDto6(PostEntity postEntity);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    PostEntity partialUpdate(PostCreatedRespond postCreatedRespond, @MappingTarget PostEntity postEntity);
 }

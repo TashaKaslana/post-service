@@ -4,51 +4,29 @@ import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.phong.postservice.annotations.ValidPostMetadata;
+import org.phong.postservice.dtos.requests.PostCreateRequest;
 import org.phong.postservice.dtos.share.BlogMetadata;
 import org.phong.postservice.dtos.share.TwitterMetadata;
 import org.phong.postservice.dtos.share.VideoMetadata;
 import org.phong.postservice.enums.PostTypeEnum;
 import org.phong.postservice.utils.MetadataConverter;
 
-import java.lang.reflect.Field;
-
-public class PostMetadataValidator implements ConstraintValidator<ValidPostMetadata, JsonNode> {
-    private String referencedFieldName;
+public class PostMetadataValidator implements ConstraintValidator<ValidPostMetadata, PostCreateRequest> {
 
     @Override
-    public void initialize(ValidPostMetadata constraintAnnotation) {
-        this.referencedFieldName = constraintAnnotation.value();
-    }
-
-    @Override
-    public boolean isValid(JsonNode jsonNode, ConstraintValidatorContext context) {
-        Object targetObject = context.unwrap(Object.class);
-
-        Field referencedField;
-        try {
-            referencedField = targetObject.getClass().getDeclaredField(referencedFieldName);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
+    public boolean isValid(PostCreateRequest request, ConstraintValidatorContext context) {
+        if (request == null || request.postType() == null || request.metadata() == null) {
+            return false;
         }
 
-        referencedField.setAccessible(true);
-
-
-        try {
-            PostTypeEnum referencedValue = (PostTypeEnum) referencedField.get(targetObject);
-
-            return isMatchFormat(referencedValue, jsonNode);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        return isMatchFormat(request.postType(), request.metadata());
     }
 
     private boolean isMatchFormat(PostTypeEnum type, JsonNode value) {
         return switch (type) {
-            case PostTypeEnum.VIDEO -> MetadataConverter.isMatchWithMetadata(value, VideoMetadata.class);
-            case PostTypeEnum.BLOG -> MetadataConverter.isMatchWithMetadata(value, BlogMetadata.class);
+            case VIDEO -> MetadataConverter.isMatchWithMetadata(value, VideoMetadata.class);
+            case BLOG -> MetadataConverter.isMatchWithMetadata(value, BlogMetadata.class);
             case TWITTER -> MetadataConverter.isMatchWithMetadata(value, TwitterMetadata.class);
-
             default -> false;
         };
     }

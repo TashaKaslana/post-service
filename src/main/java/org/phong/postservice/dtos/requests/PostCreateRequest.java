@@ -15,8 +15,9 @@ import java.util.UUID;
 /**
  * DTO for {@link PostEntity}
  */
+@ValidPostMetadata
 public record PostCreateRequest(@NotNull UUID authorId, @NotNull @NotEmpty @NotBlank String title,
                                 @NotNull @NotEmpty @NotBlank String description, @NotNull PostTypeEnum postType,
                                 VisibilityEnum visibility,
-                                @ValidPostMetadata("postType") @NotNull JsonNode metadata) implements Serializable {
+                                 @NotNull JsonNode metadata) implements Serializable {
 }
