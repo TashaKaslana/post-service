@@ -4,12 +4,15 @@ import org.phong.postservice.dtos.requests.PostCreateRequest;
 import org.phong.postservice.dtos.requests.PostMetadataUpdateRequest;
 import org.phong.postservice.dtos.requests.PostSurfaceUpdateRequest;
 import org.phong.postservice.dtos.requests.PostUpdateRequest;
+import org.phong.postservice.dtos.responds.PostCreatedRespond;
 import org.phong.postservice.dtos.responds.PostEntityRespond;
 import org.phong.postservice.enums.BusinessErrorEnum;
+import org.phong.postservice.events.producers.PostListDeletedEvent;
 import org.phong.postservice.exceptions.PostNotFoundException;
 import org.phong.postservice.infrastructure.mapstruct.PostEntityMapper;
 import org.phong.postservice.infrastructure.persistence.models.PostEntity;
 import org.phong.postservice.infrastructure.persistence.repositories.PostRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,11 +23,14 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final PostEntityMapper postEntityMapper;
+    private final ApplicationEventPublisher publisher;
 
     public PostService(PostRepository postRepository,
-                       PostEntityMapper postEntityMapper) {
+                       PostEntityMapper postEntityMapper,
+                       ApplicationEventPublisher publisher) {
         this.postRepository = postRepository;
         this.postEntityMapper = postEntityMapper;
+        this.publisher = publisher;
     }
 
     public PostEntityRespond getPostById(UUID postId) {
@@ -39,12 +45,12 @@ public class PostService {
         return postEntities.stream().map(postEntityMapper::toDto4).collect(Collectors.toList());
     }
 
-    public UUID createPost(PostCreateRequest request) {
+    public PostCreatedRespond createPost(PostCreateRequest request) {
         PostEntity postEntity = postEntityMapper.toEntity(request);
 
         PostEntity createdPostEntity = postRepository.save(postEntity);
 
-        return createdPostEntity.getId();
+        return postEntityMapper.toDto6(createdPostEntity);
     }
 
     public PostEntity findPostById(UUID postId) {
@@ -54,13 +60,23 @@ public class PostService {
     }
 
     public void deletePostById(UUID postId) {
-        findPostById(postId);
+        PostEntity entity = findPostById(postId);
 
         postRepository.deleteById(postId);
+
+//        publisher.publishEvent(postEntityMapper.toDto5(entity));
     }
 
     public void deletePostsByAuthorId(UUID authorId) {
-        postRepository.deleteAllByAuthorId(authorId);
+        List<PostEntity> postEntities = postRepository.findAllByAuthorId(authorId);
+
+        postRepository.deleteAll(postEntities);
+
+//        publisher.publishEvent(
+//                new PostListDeletedEvent(
+//                        postEntities.stream().map(PostEntity::getId).toList()
+//                )
+//        );
     }
 
     public void updatePost(UUID postId, PostUpdateRequest request) {

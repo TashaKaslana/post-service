@@ -1,6 +1,7 @@
 package org.phong.postservice.infrastructure.persistence.models;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -8,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +22,7 @@ import org.hibernate.type.SqlTypes;
 import org.phong.postservice.enums.PostTypeEnum;
 import org.phong.postservice.enums.VisibilityEnum;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -54,4 +57,7 @@ public class PostEntity extends BaseEntity {
     @Column(columnDefinition = "jsonb")
     @JdbcTypeCode(SqlTypes.JSON)
     private JsonNode metadata;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<InteractionEntity> interactions;
 }

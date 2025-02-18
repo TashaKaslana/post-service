@@ -10,10 +10,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Constraint(validatedBy = PostMetadataValidator.class)
-@Target({ElementType.FIELD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidPostMetadata {
-    String value();
     String message() default "Invalid metadata";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

@@ -10,6 +10,7 @@ import java.io.Serializable;
 /**
  * DTO for {@link org.phong.postservice.infrastructure.persistence.models.PostEntity}
  */
+@ValidPostMetadata
 public record PostMetadataUpdateRequest(@NotNull PostTypeEnum postType,
-                                        @ValidPostMetadata("postType") @NotNull JsonNode metadata) implements Serializable {
+                                         @NotNull JsonNode metadata) implements Serializable {
 }
